@@ -6,7 +6,7 @@ import os
 # ---------------- Configuration ---------------- #
 JSON_RANK_PATH = os.path.join('content', 'svd_rank.json')
 IMPORTANCE = 0.1  # Top 10 % of filters per layer (0–1, inclusive)
-OUTPUT_PATH = 'filter_indices.json'
+OUTPUT_PATH = 'content/filter_indices.json'
 BITS_PER_WEIGHT = 31
 KERNEL_ELEMS = 3 * 3
 # ------------------------------------------------ #
