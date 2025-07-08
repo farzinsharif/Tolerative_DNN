@@ -419,39 +419,26 @@ test block to see the strucure of the position::Farzin
 
 
 # Code Block 9 Final boss
+Accuracy = []
+power = -6
 
+with open("result.txt", "w") as f:
+    while power < -4:
+        for i in range(2):
+            BER = 5 * (10**power)
+            fault_tolerance_two_agree(BER, model)
+            return_acc, _, _, _, _, _, _ = test(model)
+            Accuracy.append(round(return_acc, 4))
 
-#doual
-Accuracy=[]
-Precision=[]
-Recall=[]
-Tacc=[]
-conf=[]
-sub_conf=[]
-fault_position_array=[]
-bits_array=[]
-acc_50=[]
-M=6
-power=-6
-while (power<-4):
-  for i in range (2):
-    print(power)
-    BER=5*(10**power)
-    #fault_position,bits=fault_positions(model,BER)
-    fault_tolerance_two_agree( BER, model)
-    return_acc,return_pre,return_rec,return_tacc,return_conf,return_sub_conf,return_acc_50=test(model)
-    Accuracy.append(return_acc)
-    Precision.append(return_pre)
-    Recall.append(return_rec)
-    Tacc.append(return_tacc)
-    conf.append(return_conf)
-    sub_conf.append(return_sub_conf)
-    acc_50.append(return_acc_50)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Use GPU if available
-    model = torch.load(path)
-    model.eval()
-    print(Accuracy)
-  power+=1
+            f.write(f"{power}\n")
+            f.write(f"{Accuracy}\n")
+
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            model = torch.load(path)
+            model.eval()
+
+        power += 1
+
 
 
 print('all blocks converted Successfuly')
