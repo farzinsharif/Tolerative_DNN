@@ -236,7 +236,7 @@ def fault_tolerance_two_agree(BER, model):
 
     count = len(t)
     nums = int(count * 31 * BER)
-    print(f"Total number of weights (float32): {count}")
+    # print(f"Total number of weights (float32): {count}")
 
     def random_bit_positions():
         return random.sample(range(0, 31 * count), nums)
@@ -269,7 +269,7 @@ def fault_tolerance_two_agree(BER, model):
     # display(pd.DataFrame(valid_ranges, columns=["start", "end"]))  # comment this out to suppress output # Note: since 
     # we are converting this py from an ipynb this line of code is only for ipynb represnation i added the below print
     #  line of code instead
-    print(pd.DataFrame(valid_ranges, columns=["start", "end"]))
+    # print(pd.DataFrame(valid_ranges, columns=["start", "end"])) # to see the above command in .py format uncomment this line
 
     def is_in_valid_range(index):
         return any(start <= index <= end for start, end in valid_ranges)
@@ -289,8 +289,8 @@ def fault_tolerance_two_agree(BER, model):
     random_pos_in_pos1 = [x for x in pos1 if not is_in_valid_range(x // 31)] # Not TMR fault injection
  
     all_pos = two_or_more + random_pos_in_pos1
-    print(len(all_pos))
-    print(len(two_or_more))
+    # print(len(all_pos))
+    # print(len(two_or_more))
     if len(two_or_more) == 0:
         print("No 2-agreement bit flips found. Nothing to do.")
         return
@@ -416,29 +416,62 @@ test block to see the strucure of the position::Farzin
 
 # debug_bit_positions(BER, model)
 
+"""
+Logger
+"""
+import csv
+import os
+
+csv_path = "results.csv"
+
+# Initialize CSV (only once)
+if not os.path.exists(csv_path):
+    with open(csv_path, "w", newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["BER_power", "Iteration", "Accuracy"])
+
+# During each run:
+def log_to_csv(power, iteration, accuracy):
+    with open(csv_path, "a", newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([power, iteration, accuracy])
+        f.flush()
+        os.fsync(f.fileno())
 
 
 # Code Block 9 Final boss
-Accuracy = []
-power = -6
-
-with open("result.txt", "w") as f:
-    while power < -4:
-        for i in range(2):
-            BER = 5 * (10**power)
-            fault_tolerance_two_agree(BER, model)
-            return_acc, _, _, _, _, _, _ = test(model)
-            Accuracy.append(round(return_acc, 4))
-
-            f.write(f"{power}\n")
-            f.write(f"{Accuracy}\n")
-
-            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-            model = torch.load(path)
-            model.eval()
-
-        power += 1
-
+#doual
+Accuracy=[]
+Precision=[]
+Recall=[]
+Tacc=[]
+conf=[]
+sub_conf=[]
+fault_position_array=[]
+bits_array=[]
+acc_50=[]
+M=6
+power=-6
+while (power<-1):
+  for i in range (2):
+    print(power)
+    BER=5*(10**power)
+    #fault_position,bits=fault_positions(model,BER)
+    fault_tolerance_two_agree( BER, model)
+    return_acc,return_pre,return_rec,return_tacc,return_conf,return_sub_conf,return_acc_50=test(model)
+    Accuracy.append(return_acc)
+    Precision.append(return_pre)
+    Recall.append(return_rec)
+    Tacc.append(return_tacc)
+    conf.append(return_conf)
+    sub_conf.append(return_sub_conf)
+    acc_50.append(return_acc_50)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Use GPU if available
+    model = torch.load(path)
+    model.eval()
+    print(Accuracy)
+    log_to_csv(power, i, return_acc)
+  power+=1
 
 
 print('all blocks converted Successfuly')
