@@ -1,7 +1,4 @@
 #Code Block 1
-
-
-
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -24,13 +21,7 @@ trainloader = torch.utils.data.DataLoader(train_data, batch_size=32, shuffle=Tru
 test_data = torchvision.datasets.CIFAR100(root='./data', train=False, download=True, transform=transform)
 
 testloader = torch.utils.data.DataLoader(test_data, batch_size=32, shuffle=False, num_workers=2)
-
-
-
 # Code Block 2 
-
-
-
 model_save_name = 'VGG11_80.pt'
 path = F"./model/VGG11/{model_save_name}"
 AlexNet_model = torchvision.models.vgg11_bn(pretrained=True)
@@ -39,11 +30,7 @@ model = AlexNet_model.to(device)
 model = torch.load(path, map_location=device)
 
 model.eval()
-
-
-
 # Code Block 3
-
 
 from ignite.metrics import Precision,Recall,Accuracy,ConfusionMatrix,TopKCategoricalAccuracy
 precision = Precision(device=device)
@@ -96,11 +83,7 @@ def test(model):
         T_acc.reset()
         acc_50=correct/total
         return return_acc,return_pre,return_rec,return_tacc,return_con.item(),return_sub_con.item(),acc_50.item()
-
-
 # Code Block 4
-
-
 
 # ================================================================
 # change number to bit representation
@@ -161,10 +144,7 @@ import numpy as np
 def inv_IEEE754_tensor(num_IEEE_array):
 
     binary_matrix = np.array([list(num) for num in num_IEEE_array], dtype=int)
-
-
     signs = binary_matrix[:, 0]
-
     exponent_bits = binary_matrix[:, 1:9]
     exponents = np.dot(exponent_bits, 2 ** np.arange(7, -1, -1))
     mantissa_bits = binary_matrix[:, 9:].astype(float)
@@ -180,13 +160,7 @@ def inv_IEEE754_tensor(num_IEEE_array):
     numbers = np.where(signs == 1, -numbers, numbers)
 
     return numbers
-
-
-
 # Code Block 5
-
-
-
 import numpy as np
 import torch
 
@@ -213,11 +187,7 @@ def bitFLIP_v3_tensor(original_values, positions_list):
     flipped_values_tensor = torch.tensor(flipped_values, dtype=original_values.dtype, device=original_values.device, requires_grad=True)
 
     return flipped_values_tensor
-
-
 # Code Block 6.4 (there were 4 code block in the tmr fun which eventually the 4th code block was the correct one.)
-
-
 """
 CODE BLOCK 4
 """
@@ -244,13 +214,11 @@ def fault_tolerance_two_agree(BER, model):
     pos1 = random_bit_positions()
     pos2 = random_bit_positions()
     pos3 = random_bit_positions()
-
     # Optional print statements — comment these out if not needed
     # print(len(pos1))
     # print(len(pos2))
     # print(len(pos3))
     # print(len(pos1 + pos2 + pos3))  # or print(len(all_positions)) after definition
-
     all_positions = pos1 + pos2 + pos3
     pos_counts = Counter(all_positions)
 
@@ -340,82 +308,8 @@ def fault_tolerance_two_agree(BER, model):
                 param.data.copy_(param_flat.view(param.shape))
 
             start = end
-
 #  Call the function
 # fault_tolerance_two_agree(BER, model)
-
-
-
-# Code Block 7
-""" 
-Test block to see the total weight
-Note: more explanation of the weights are demonstrated in the md below:: Farzin
-"""
-
-# def count_eligible_weights(model):
-#     # Flatten and concatenate all eligible weight parameters
-#     t = torch.cat([param.view(-1) for name, param in model.named_parameters()
-#                    if "weight" in name and "norm" not in name])
-#     count = len(t)
-#     print(f"Total number of weights (float32): {count}")
-#     return count
-# count_eligible_weights(model)
-
-
-
-#Code Block 8
-
-
-"""
-test block to see the strucure of the position::Farzin
-"""
-
-# import torch
-# import random
-# from collections import Counter
-# BER = 1e-5
-
-# def debug_bit_positions(BER, model):
-#     # Flatten weights (excluding normalization layers)
-#     t = torch.cat([
-#         param.detach().cpu().view(-1)
-#         for name, param in model.named_parameters()
-#         if "weight" in name and "norm" not in name
-#     ])
-    
-#     count = len(t)
-#     nums = int(count * 31 * BER)
-    
-#     print(f"Total number of weights (float32): {count}")
-#     print(f"Number of bit positions to flip (per sample): {nums}")
-    
-#     def random_bit_positionss():
-#         return random.sample(range(0, 31 * count), nums)
-    
-#     pos1 = random_bit_positionss()
-#     pos2 = random_bit_positionss()
-#     pos3 = random_bit_positionss()
-    
-#     all_positions = pos1 + pos2 + pos3
-
-#     print("\nSample of pos1 (first 20 values):")
-#     print(pos1[:20])
-    
-#     print("\nSample of pos2 (first 20 values):")
-#     print(pos2[:20])
-    
-#     print("\nSample of pos3 (first 20 values):")
-#     print(pos3[:20])
-    
-#     print(f"\nTotal combined positions (len={len(all_positions)}), sample:")
-#     print(all_positions[:20])
-#     print(len(pos1))
-#     print(len(pos2))
-#     print(len(pos3))
-#     print(len(all_positions))
-
-# debug_bit_positions(BER, model)
-
 """
 Logger
 """
@@ -437,7 +331,6 @@ def log_to_csv(power, iteration, accuracy):
         writer.writerow([power, iteration, accuracy])
         f.flush()
         os.fsync(f.fileno())
-
 
 # Code Block 9 Final boss
 #doual
@@ -472,6 +365,4 @@ while (power<-1):
     print(Accuracy)
     log_to_csv(power, i, return_acc)
   power+=1
-
-
 print('all blocks converted Successfuly')
