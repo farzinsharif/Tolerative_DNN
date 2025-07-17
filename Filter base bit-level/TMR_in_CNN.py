@@ -223,7 +223,7 @@ def fault_tolerance_two_agree(BER, model):
     pos_counts = Counter(all_positions)
 
     # Load valid ranges from the JSON file
-    with open('content/filter_indices_40pct.json') as f:
+    with open('content/filter_indices_60pct.json') as f:
         range_data = json.load(f)
 
     # Flatten and collect all valid index ranges
@@ -315,6 +315,7 @@ Logger
 """
 import csv
 import os
+import numpy as np  # For averaging multi-value metrics
 
 csv_path = "results.csv"
 
@@ -322,13 +323,27 @@ csv_path = "results.csv"
 if not os.path.exists(csv_path):
     with open(csv_path, "w", newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(["BER_power", "Iteration", "Accuracy"])
+        writer.writerow(["BER_power", "Iteration", "Accuracy", "Tacc", "Precision", "Recall", "Confidence", "Sub-Confidence", "Acc_50"])
 
 # During each run:
-def log_to_csv(power, iteration, accuracy):
+def log_to_csv(power, iteration, accuracy, tacc, precision, recall, conf, sub_conf, acc_50):
+    # Convert to scalar if necessary (e.g., take mean if tensor or list)
+    def scalar(x):
+        return x.mean().item() if hasattr(x, 'mean') else (np.mean(x) if isinstance(x, (list, tuple, np.ndarray)) else x)
+
     with open(csv_path, "a", newline='') as f:
         writer = csv.writer(f)
-        writer.writerow([power, iteration, accuracy])
+        writer.writerow([
+            power,
+            iteration,
+            scalar(accuracy),
+            scalar(tacc),
+            scalar(precision),
+            scalar(recall),
+            scalar(conf),
+            scalar(sub_conf),
+            scalar(acc_50),
+        ])
         f.flush()
         os.fsync(f.fileno())
 
@@ -344,9 +359,9 @@ fault_position_array=[]
 bits_array=[]
 acc_50=[]
 M=6
-power=-5
-while (power<-4):
-  for i in range (5):
+power=-6
+while (power<-5):
+  for i in range (2):
     print(power)
     BER=5*(10**power)
     #fault_position,bits=fault_positions(model,BER)
@@ -363,6 +378,6 @@ while (power<-4):
     model = torch.load(path)
     model.eval()
     print(Accuracy)
-    log_to_csv(power, i, return_acc)
+    log_to_csv(power, i, return_acc, return_tacc, return_pre, return_rec, return_conf, return_sub_conf, return_acc_50)
   power+=1
 print('all blocks converted Successfuly')

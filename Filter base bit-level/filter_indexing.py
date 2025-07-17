@@ -4,8 +4,8 @@ import argparse
 import os
 
 # ---------------- Configuration ---------------- #
-JSON_RANK_PATH = os.path.join('content', 'filter_ranks_80%_prune.json')       # per‑layer filter‑rank file
-IMPORTANCE      = 0.40                                          # top‑k fraction of filters (0–1]
+JSON_RANK_PATH = os.path.join('content', 'svd_rank.json')       # per‑layer filter‑rank file
+IMPORTANCE      = 0.60                                          # top‑k fraction of filters (0–1]
 OUTPUT_PATH     = 'content/filter_indices.json'                 # where to write the result
 BITS_PER_WEIGHT = 31                                            # mutable bits per float32
 KERNEL_ELEMS    = 3 * 3                                         # kernel size (3×3)
