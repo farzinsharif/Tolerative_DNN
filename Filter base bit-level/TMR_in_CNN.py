@@ -22,7 +22,7 @@ test_data = torchvision.datasets.CIFAR100(root='./data', train=False, download=T
 
 testloader = torch.utils.data.DataLoader(test_data, batch_size=32, shuffle=False, num_workers=2)
 # Code Block 2 
-model_save_name = 'VGG11_80.pt'
+model_save_name = 'VGG11.pt'
 path = F"./model/VGG11/{model_save_name}"
 AlexNet_model = torchvision.models.vgg11_bn(pretrained=True)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -223,7 +223,7 @@ def fault_tolerance_two_agree(BER, model):
     pos_counts = Counter(all_positions)
 
     # Load valid ranges from the JSON file
-    with open('content/filter_indices.json') as f:
+    with open('content/filter_indices_40pct.json') as f:
         range_data = json.load(f)
 
     # Flatten and collect all valid index ranges
@@ -344,9 +344,9 @@ fault_position_array=[]
 bits_array=[]
 acc_50=[]
 M=6
-power=-6
-while (power<-1):
-  for i in range (2):
+power=-5
+while (power<-4):
+  for i in range (5):
     print(power)
     BER=5*(10**power)
     #fault_position,bits=fault_positions(model,BER)

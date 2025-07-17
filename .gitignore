@@ -4,3 +4,5 @@
 content/filter_faults.json
 /Filter base bit-level/data/
 /Filter base bit-level/model/
+/Rank Generator/data/
+/Rank Generator/model/
