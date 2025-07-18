@@ -1,12 +1,17 @@
+"""
+This code_module prepare the weight index in json format suitable for TMR_IN_CNN.py from Rank_generator folder
+"""
+
+
 import json
 import math
 import argparse
 import os
 
 # ---------------- Configuration ---------------- #
-JSON_RANK_PATH = os.path.join('content', 'svd_rank.json')       # per‑layer filter‑rank file
+JSON_RANK_PATH = os.path.join('content/10%_Prune', 'filter_ranks_10%_prune.json')       # per‑layer filter‑rank file
 IMPORTANCE      = 0.60                                          # top‑k fraction of filters (0–1]
-OUTPUT_PATH     = 'content/filter_indices.json'                 # where to write the result
+OUTPUT_PATH     = 'content/10%_Prune/filter_indices.json'                 # where to write the result
 BITS_PER_WEIGHT = 31                                            # mutable bits per float32
 KERNEL_ELEMS    = 3 * 3                                         # kernel size (3×3)
 BN_PARAM_MULT   = 1                                             # BatchNorm: count γ only (no β)

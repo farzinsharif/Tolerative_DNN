@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
 # ───────────── USER CONFIG ───────────── #
-IMPORTANCE      = 0.10                                 # e.g., 0.10 → top 10%
+IMPORTANCE      = 0.60                                 # e.g., 0.10 → top 10%
 TOTAL_INDICES   = 129_167_744                          # fixed grand total
-JSON_PATH       = os.path.join('content', 'filter_indices.json')
+JSON_PATH       = os.path.join('content/80%_Prune', 'filter_indices_60pct.json')
 SAVE_PATH       = f"content/weight chart-{int(IMPORTANCE * 100)}% importance.png"
 BITS_PER_WEIGHT = 31
 # ─────────────────────────────────────── #
