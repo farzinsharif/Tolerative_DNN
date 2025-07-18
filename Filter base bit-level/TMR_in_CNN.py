@@ -22,14 +22,12 @@ test_data = torchvision.datasets.CIFAR100(root='./data', train=False, download=T
 
 testloader = torch.utils.data.DataLoader(test_data, batch_size=32, shuffle=False, num_workers=2)
 # Code Block 2 
-model_save_name = 'VGG11.pt'
-path = F"./model/VGG11/{model_save_name}"
-AlexNet_model = torchvision.models.vgg11_bn(pretrained=True)
+path = './model/VGG11/VGG11_10LWM.pt'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-model = AlexNet_model.to(device)
-model = torch.load(path, map_location=device)
 
+model = torch.load(path, map_location=device)
 model.eval()
+print("\n\nLoaded model architecture:\n", model.__class__.__name__)
 # Code Block 3
 
 from ignite.metrics import Precision,Recall,Accuracy,ConfusionMatrix,TopKCategoricalAccuracy
@@ -359,9 +357,9 @@ fault_position_array=[]
 bits_array=[]
 acc_50=[]
 M=6
-power=-6
-while (power<-5):
-  for i in range (2):
+power=-8
+while (power<-7):
+  for i in range (10):
     print(power)
     BER=5*(10**power)
     #fault_position,bits=fault_positions(model,BER)
