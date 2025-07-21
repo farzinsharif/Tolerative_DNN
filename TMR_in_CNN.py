@@ -6,6 +6,8 @@ import torch.nn.utils.prune as prune
 import torch.nn.functional as F
 import random
 import pandas as pd
+import os
+
 transform = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
@@ -22,7 +24,9 @@ test_data = torchvision.datasets.CIFAR100(root='./data', train=False, download=T
 
 testloader = torch.utils.data.DataLoader(test_data, batch_size=32, shuffle=False, num_workers=2)
 # Code Block 2 
-path = './model/VGG11/VGG11_10LWM.pt'
+path = os.getenv("MODEL_PATH")
+if path is None:
+    raise ValueError("MODEL_PATH environment variable must be set.")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 model = torch.load(path, map_location=device)
@@ -221,7 +225,12 @@ def fault_tolerance_two_agree(BER, model):
     pos_counts = Counter(all_positions)
 
     # Load valid ranges from the JSON file
-    with open('content/filter_indices_60pct.json') as f:
+    json_path = os.getenv("JSON_PATH")
+    if json_path is None:
+        raise ValueError("JSON_PATH environment variable must be set.")
+
+
+    with open(json_path) as f:
         range_data = json.load(f)
 
     # Flatten and collect all valid index ranges
@@ -314,8 +323,16 @@ Logger
 import csv
 import os
 import numpy as np  # For averaging multi-value metrics
+import re
 
-csv_path = "results.csv"
+# Extract prune percentage from model path
+match = re.search(r'_(\d+)\.pt$', os.path.basename(path))
+if match:
+    prune_percent = match.group(1)
+else:
+    prune_percent = "Unknown"
+
+csv_path = f"results_{prune_percent}%_Prune.csv"
 
 # Initialize CSV (only once)
 if not os.path.exists(csv_path):
@@ -324,7 +341,7 @@ if not os.path.exists(csv_path):
         writer.writerow(["BER_power", "Iteration", "Accuracy", "Tacc", "Precision", "Recall", "Confidence", "Sub-Confidence", "Acc_50"])
 
 # During each run:
-def log_to_csv(power, iteration, accuracy, tacc, precision, recall, conf, sub_conf, acc_50):
+def log_to_csv(base, power, iteration, accuracy, tacc, precision, recall, conf, sub_conf, acc_50):
     # Convert to scalar if necessary (e.g., take mean if tensor or list)
     def scalar(x):
         return x.mean().item() if hasattr(x, 'mean') else (np.mean(x) if isinstance(x, (list, tuple, np.ndarray)) else x)
@@ -332,7 +349,7 @@ def log_to_csv(power, iteration, accuracy, tacc, precision, recall, conf, sub_co
     with open(csv_path, "a", newline='') as f:
         writer = csv.writer(f)
         writer.writerow([
-            power,
+            f"{base}x10^{power}",
             iteration,
             scalar(accuracy),
             scalar(tacc),
@@ -344,6 +361,7 @@ def log_to_csv(power, iteration, accuracy, tacc, precision, recall, conf, sub_co
         ])
         f.flush()
         os.fsync(f.fileno())
+
 
 # Code Block 9 Final boss
 #doual
@@ -358,9 +376,9 @@ bits_array=[]
 acc_50=[]
 M=6
 power = -8
-while power < -7:
+while power < -6:
     for base in [5, 1]:
-        for i in range(10):
+        for i in range(2):
             print(f"power: {power}, base: {base}")
             BER = base * (10 ** power)
             fault_tolerance_two_agree(BER, model)
@@ -376,6 +394,6 @@ while power < -7:
             model = torch.load(path)
             model.eval()
             print(Accuracy)
-            log_to_csv(f"{base}e{power}", i, return_acc, return_tacc, return_pre, return_rec, return_conf, return_sub_conf, return_acc_50)
+            log_to_csv(base, power, i, return_acc, return_tacc, return_pre, return_rec, return_conf, return_sub_conf, return_acc_50)
     power += 1
 print('all blocks converted Successfully')
