@@ -22,7 +22,7 @@ dataset = datasets.CIFAR100(root='./data', train=False, download=False, transfor
 loader = DataLoader(dataset, batch_size=1, shuffle=True)
 
 # Output directory
-output_dir = "Content"
+output_dir = "Content_(Raw_Ranks_of_DNN_Model)"
 os.makedirs(output_dir, exist_ok=True)
 
 # List all model files

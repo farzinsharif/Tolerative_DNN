@@ -357,25 +357,25 @@ fault_position_array=[]
 bits_array=[]
 acc_50=[]
 M=6
-power=-8
-while (power<-7):
-  for i in range (10):
-    print(power)
-    BER=5*(10**power)
-    #fault_position,bits=fault_positions(model,BER)
-    fault_tolerance_two_agree( BER, model)
-    return_acc,return_pre,return_rec,return_tacc,return_conf,return_sub_conf,return_acc_50=test(model)
-    Accuracy.append(return_acc)
-    Precision.append(return_pre)
-    Recall.append(return_rec)
-    Tacc.append(return_tacc)
-    conf.append(return_conf)
-    sub_conf.append(return_sub_conf)
-    acc_50.append(return_acc_50)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Use GPU if available
-    model = torch.load(path)
-    model.eval()
-    print(Accuracy)
-    log_to_csv(power, i, return_acc, return_tacc, return_pre, return_rec, return_conf, return_sub_conf, return_acc_50)
-  power+=1
-print('all blocks converted Successfuly')
+power = -8
+while power < -7:
+    for base in [5, 1]:
+        for i in range(10):
+            print(f"power: {power}, base: {base}")
+            BER = base * (10 ** power)
+            fault_tolerance_two_agree(BER, model)
+            return_acc, return_pre, return_rec, return_tacc, return_conf, return_sub_conf, return_acc_50 = test(model)
+            Accuracy.append(return_acc)
+            Precision.append(return_pre)
+            Recall.append(return_rec)
+            Tacc.append(return_tacc)
+            conf.append(return_conf)
+            sub_conf.append(return_sub_conf)
+            acc_50.append(return_acc_50)
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Use GPU if available
+            model = torch.load(path)
+            model.eval()
+            print(Accuracy)
+            log_to_csv(f"{base}e{power}", i, return_acc, return_tacc, return_pre, return_rec, return_conf, return_sub_conf, return_acc_50)
+    power += 1
+print('all blocks converted Successfully')
