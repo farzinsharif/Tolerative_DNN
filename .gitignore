@@ -1,6 +1,6 @@
 **/data/
 **/model/
-
+hp_dnn.tar.gz
 content/filter_faults.json
 /Filter base bit-level/data/
 /Filter base bit-level/model/
