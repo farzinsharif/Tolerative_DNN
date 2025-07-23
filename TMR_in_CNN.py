@@ -325,14 +325,20 @@ import os
 import numpy as np  # For averaging multi-value metrics
 import re
 
-# Extract prune percentage from model path
-match = re.search(r'_(\d+)\.pt$', os.path.basename(path))
-if match:
-    prune_percent = match.group(1)
-else:
-    prune_percent = "Unknown"
+# Extract prune percentage from model filename
+model_filename = os.path.basename(path)
+match = re.search(r'_(\d+)\.pt$', model_filename)
+prune_percent = match.group(1) if match else "Unknown"
 
-csv_path = f"results_{prune_percent}%_Prune.csv"
+# Extract rank percentage from JSON file name
+json_path = os.getenv("JSON_PATH")
+json_filename = os.path.basename(json_path)
+match_json = re.search(r'filter_indices_(\d+)pct\.json$', json_filename)
+rank_percent = match_json.group(1) if match_json else "Unknown"
+
+# Construct CSV path
+csv_path = f"results_{prune_percent}%_Prune_{rank_percent}%_Hrank.csv"
+
 
 # Initialize CSV (only once)
 if not os.path.exists(csv_path):
@@ -375,10 +381,10 @@ fault_position_array=[]
 bits_array=[]
 acc_50=[]
 M=6
-power = -6
+power = -5
 while power < -3:
-    for base in [5, 1]:
-        for i in range(10):
+    for base in [1, 5]:
+        for i in range(8):
             print(f"power: {power}, base: {base}")
             BER = base * (10 ** power)
             fault_tolerance_two_agree(BER, model)
