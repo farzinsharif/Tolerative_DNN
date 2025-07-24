@@ -9,9 +9,9 @@ import argparse
 import os
 
 # ---------------- Configuration ---------------- #
-JSON_RANK_PATH = os.path.join('content_for_TMR/80%_Prune', 'filter_ranks_80%_prune.json')       # per‑layer filter‑rank file
-IMPORTANCE      = 0.35                                          # top‑k fraction of filters (0–1]
-OUTPUT_PATH     = 'content_for_TMR/80%_Prune/filter_indices.json'                 # where to write the result
+JSON_RANK_PATH = os.path.join('content_for_TMR/20%_Prune', 'filter_ranks_20%_prune.json')       # per‑layer filter‑rank file
+IMPORTANCE      = 0.10                                          # top‑k fraction of filters (0–1]
+OUTPUT_PATH     = 'content_for_TMR/20%_Prune/filter_indices.json'                 # where to write the result
 BITS_PER_WEIGHT = 31                                            # mutable bits per float32
 KERNEL_ELEMS    = 3 * 3                                         # kernel size (3×3)
 BN_PARAM_MULT   = 1                                             # BatchNorm: count γ only (no β)
