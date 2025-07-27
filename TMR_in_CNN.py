@@ -381,10 +381,10 @@ fault_position_array=[]
 bits_array=[]
 acc_50=[]
 M=6
-power = -5
+power = -4
 while power < -3:
-    for base in [1, 5]:
-        for i in range(8):
+    for base in [5]:
+        for i in range(2):
             print(f"power: {power}, base: {base}")
             BER = base * (10 ** power)
             fault_tolerance_two_agree(BER, model)

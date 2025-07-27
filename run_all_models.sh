@@ -1,10 +1,10 @@
 #!/bin/bash
 
-MODEL_DIR="./model/VGG11"
-CONTENT_DIR="./content_for_TMR"
+MODEL_DIR="./model/RES50"
+CONTENT_DIR="./content_for_TMR/ResNet"
 PYTHON_SCRIPT="TMR_in_CNN.py"
 
-for model_path in "$MODEL_DIR"/VGG11_*.pt; do
+for model_path in "$MODEL_DIR"/res50_*.pt; do
     model_file=$(basename "$model_path")
     model_dir=$(dirname "$model_path")
 
